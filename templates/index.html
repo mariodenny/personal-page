@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <i class="bi bi-stars"></i>
+        Builder • Backend • IoT • Linux Enthusiast
+      </div>
+
+      <h1>
+        {{ profile.hero_title | safe if profile else "Hi, I'm Denny Mario.<br>I build digital systems with code." }}
+      </h1>
+
+      <p>
+        {{ profile.hero_description if profile else "Passionate about backend engineering, IoT systems, Linux servers, and modern web technologies. Currently exploring Flask, Docker, Express.js, MQTT, and scalable server architecture while building projects through Coreva." }}
+      </p>
+
+      <div class="mt-4 d-flex flex-wrap gap-3">
+        <a href="#projects" class="btn btn-primary btn-custom">
+          <i class="bi bi-rocket-takeoff-fill me-2"></i>View Projects
+        </a>
+
+        <a href="#contact" class="btn btn-outline-light btn-custom">
+          <i class="bi bi-envelope-fill me-2"></i>Contact Me
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="py-5">
+    <div class="container">
+      <h2 class="section-title">About Me</h2>
+      <p class="section-desc">
+        {{ profile.about_description if profile else "I'm a technology enthusiast focused on backend development, IoT engineering, and Linux server ecosystems. I enjoy building systems that connect hardware and software together — from ESP32 monitoring systems to scalable Flask APIs deployed on VPS infrastructure." }}
+      </p>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="icon-box">
+              <i class="bi bi-cpu-fill"></i>
+            </div>
+            <h4>IoT Engineering</h4>
+            <p class="text-secondary-emphasis mt-3">
+              Building smart systems using ESP32, sensors, MQTT, and mobile integrations.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="icon-box">
+              <i class="bi bi-server"></i>
+            </div>
+            <h4>Backend Development</h4>
+            <p class="text-secondary-emphasis mt-3">
+              Developing APIs and server-side systems using Flask, Express.js, and Docker.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="glass-card">
+            <div class="icon-box">
+              <i class="bi bi-terminal-fill"></i>
+            </div>
+            <h4>Linux & VPS</h4>
+            <p class="text-secondary-emphasis mt-3">
+              Managing VPS deployments, nginx reverse proxy, SSH workflows, and containers.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="py-5">
+    <div class="container">
+      <h2 class="section-title">Tech Stack</h2>
+      <p class="section-desc">
+        Technologies and tools I currently use for development and experimentation.
+      </p>
+
+      <div class="tech-stack">
+        {% if skills %}
+          {% for skill in skills %}
+            <span>{{ skill.name }}</span>
+          {% endfor %}
+        {% else %}
+          <span>Python</span>
+          <span>Flask</span>
+          <span>Docker</span>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="py-5">
+    <div class="container">
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-desc">
+        A glimpse into projects and systems I'm currently building.
+      </p>
+
+      <div class="row g-4">
+        {% if projects %}
+          {% for project in projects %}
+          <div class="col-lg-6">
+            <div class="glass-card">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h4>
+                  <i class="bi {{ project.icon_class }} me-2"></i>
+                  {{ project.title }}
+                </h4>
+              </div>
+              <div class="mb-3">
+                {% if project.date %}
+                  <span class="badge bg-secondary me-2">{{ project.date }}</span>
+                {% endif %}
+                {% if project.category %}
+                  <span class="badge bg-primary text-uppercase">{{ project.category }}</span>
+                {% endif %}
+              </div>
+              {% if project.images %}
+              <div id="carouselProject{{ project.id }}" class="carousel slide mb-3" data-bs-ride="carousel">
+                <div class="carousel-inner rounded">
+                  {% for image in project.images %}
+                  <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <img src="{{ url_for('static', filename='uploads/' ~ image.filename) }}" class="d-block w-100" alt="Project Image" style="height: 200px; object-fit: cover;">
+                  </div>
+                  {% endfor %}
+                </div>
+                {% if project.images|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselProject{{ project.id }}" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselProject{{ project.id }}" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
+                {% endif %}
+              </div>
+              {% endif %}
+              <p class="mt-3 text-secondary-emphasis">
+                {{ project.description }}
+              </p>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-lg-6">
+            <div class="glass-card">
+              <h4>
+                <i class="bi bi-code me-2"></i>
+                No projects yet
+              </h4>
+              <p class="mt-3 text-secondary-emphasis">
+                Add projects from the database.
+              </p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {% if latest_posts %}
+  <section id="latest-posts" class="py-5">
+    <div class="container">
+      <h2 class="section-title">Latest Thoughts</h2>
+      <p class="section-desc">Recent articles from my blog.</p>
+      <div class="row g-4 mt-2">
+        {% for post in latest_posts %}
+        <div class="col-md-4">
+          <div class="glass-card">
+            {% if post.image %}
+            <img src="{{ url_for('static', filename='uploads/' ~ post.image.filename) }}" class="w-100 rounded mb-3" alt="Blog Cover" style="height: 150px; object-fit: cover;">
+            {% endif %}
+            <small class="text-muted">{{ post.date_posted.strftime('%B %d, %Y') }}</small>
+            <h5 class="mt-2">{{ post.title }}</h5>
+            <p class="text-secondary-emphasis mt-3" style="font-size: 14px;">
+              {{ post.content | striptags | truncate(80) }}
+            </p>
+            <a href="{{ url_for('post', slug=post.slug) }}" class="text-decoration-none text-accent">Read &rarr;</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section id="contact" class="py-5">
+    <div class="container">
+      <div class="glass-card text-center p-5">
+        <h2 class="section-title">Let's Build Something</h2>
+
+        <p class="section-desc mx-auto mb-4">
+          {{ profile.contact_text if profile else "Open for collaboration, experimentation, and building interesting systems around backend engineering and IoT." }}
+        </p>
+
+        <div class="socials mt-4">
+          <a href="#"><i class="bi bi-github"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="mailto:dennym.channel@gmail.com"><i class="bi bi-envelope-fill"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

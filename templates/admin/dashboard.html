@@ -1,0 +1,27 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<h2>Manage Profile</h2>
+<div class="card shadow-sm mt-4">
+  <div class="card-body">
+    <form action="{{ url_for('admin_update_profile') }}" method="POST">
+      <div class="mb-3">
+        <label class="form-label">Hero Title (HTML allowed)</label>
+        <input type="text" class="form-control" name="hero_title" value="{{ profile.hero_title if profile else '' }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Hero Description</label>
+        <textarea class="form-control" name="hero_description" rows="3" required>{{ profile.hero_description if profile else '' }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">About Description</label>
+        <textarea class="form-control" name="about_description" rows="4" required>{{ profile.about_description if profile else '' }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Contact Text</label>
+        <textarea class="form-control" name="contact_text" rows="2" required>{{ profile.contact_text if profile else '' }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-success">Save Profile</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

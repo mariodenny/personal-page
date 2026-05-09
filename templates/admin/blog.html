@@ -1,0 +1,67 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>Manage Blog Posts</h2>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPostModal">Write Post</button>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in posts %}
+        <tr>
+          <td>{{ post.id }}</td>
+          <td>{{ post.title }}</td>
+          <td>{{ post.date_posted.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>
+            <a href="{{ url_for('post', slug=post.slug) }}" target="_blank" class="btn btn-sm btn-info text-white">View</a>
+            <a href="{{ url_for('admin_delete_post', id=post.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this post?');">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addPostModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form action="{{ url_for('admin_add_post') }}" method="POST" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title">Write New Post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label>Title</label>
+            <input type="text" name="title" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label>Cover Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+          </div>
+          <div class="mb-3">
+            <label>Content (HTML supported)</label>
+            <textarea name="content" class="form-control" rows="10" required></textarea>
+            <small class="text-muted">You can use tags like &lt;h3&gt;, &lt;p&gt;, &lt;strong&gt;, etc.</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Publish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
