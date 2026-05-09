@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<section class="py-5 mt-5">
-  <div class="container mt-5">
+<section class="py-5 reveal">
+  <div class="container" style="max-width: 800px;">
     <a href="{{ url_for('blog') }}" class="text-muted text-decoration-none mb-4 d-inline-block">&larr; Back to Blog</a>
-    <h1 class="section-title">{{ post.title }}</h1>
+    <h1 class="section-title text-gradient">{{ post.title }}</h1>
     <p class="text-muted">{{ post.date_posted.strftime('%B %d, %Y') }}</p>
     {% if post.image %}
     <img src="{{ url_for('static', filename='uploads/' ~ post.image.filename) }}" class="w-100 rounded mt-4" alt="Blog Cover" style="max-height: 400px; object-fit: cover;">
