@@ -2,31 +2,296 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard | Coreva</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #f8f9fa; }
-    .sidebar { min-height: 100vh; background-color: #343a40; color: white; padding-top: 20px;}
-    .sidebar a { color: #adb5bd; text-decoration: none; padding: 10px 20px; display: block; }
-    .sidebar a:hover, .sidebar a.active { color: white; background-color: #495057; }
-    .content { padding: 30px; }
+    /* ── Base ───────────────────────────── */
+    *, body { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+    body { background: #f0f4ff; min-height: 100vh; color: #1e293b; }
+
+    /* ── Sidebar ────────────────────────── */
+    .sidebar {
+      width: 250px;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #1e2f6e 0%, #0f1729 100%);
+      color: #c7d2f0;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 22px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .sidebar-brand i {
+      font-size: 22px;
+      background: linear-gradient(135deg, #60a5fa, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sidebar-nav {
+      padding: 16px 12px;
+      flex: 1;
+    }
+
+    .sidebar-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: rgba(199,210,240,0.45);
+      padding: 14px 12px 6px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: #a5b8d8;
+      text-decoration: none;
+      font-size: 14.5px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      transition: all 0.22s ease;
+    }
+
+    .sidebar-link i {
+      font-size: 17px;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-link:hover, .sidebar-link.active {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .sidebar-link.active {
+      background: rgba(96, 165, 250, 0.2);
+      color: #7eb8ff;
+      border-left: 3px solid #60a5fa;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-link.link-danger { color: #f87171; }
+    .sidebar-link.link-danger:hover { background: rgba(248,113,113,0.12); color: #fca5a5; }
+    .sidebar-link.link-info  { color: #67e8f9; }
+    .sidebar-link.link-info:hover  { background: rgba(103,232,249,0.1); color: #a5f3fc; }
+
+    /* ── Content area ────────────────────── */
+    .admin-content {
+      margin-left: 250px;
+      padding: 32px 36px;
+      min-height: 100vh;
+    }
+
+    /* ── Page header ─────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #dde3f4;
+    }
+
+    .page-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+    }
+
+    /* ── Cards ───────────────────────────── */
+    .admin-card {
+      background: #fff;
+      border: 1px solid #e2e8f7;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(30,47,110,0.06);
+      overflow: hidden;
+    }
+
+    .admin-card .card-header {
+      background: #f7f9ff;
+      border-bottom: 1px solid #e2e8f7;
+      padding: 16px 24px;
+      font-weight: 600;
+      font-size: 15px;
+      color: #334155;
+    }
+
+    .admin-card .card-body { padding: 24px; }
+
+    /* ── Tables ──────────────────────────── */
+    .table { margin: 0; font-size: 14.5px; }
+    .table thead th {
+      background: #f1f5ff;
+      color: #475569;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      padding: 12px 16px;
+    }
+
+    .table tbody td {
+      padding: 13px 16px;
+      vertical-align: middle;
+      border-color: #e2e8f7;
+      color: #334155;
+    }
+
+    .table-hover tbody tr:hover { background: #f8faff; }
+
+    /* ── Forms ───────────────────────────── */
+    .form-label {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+
+    .form-control, .form-select {
+      border: 1.5px solid #dde3f4;
+      border-radius: 10px;
+      font-size: 14.5px;
+      padding: 10px 14px;
+      color: #1e293b;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96,165,250,0.18);
+      outline: none;
+    }
+
+    textarea.form-control { resize: vertical; }
+
+    /* ── Buttons ─────────────────────────── */
+    .btn {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      border-radius: 10px;
+      font-size: 14px;
+      transition: all 0.22s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #60a5fa, #a855f7);
+      border: none;
+      color: #fff;
+      box-shadow: 0 3px 12px rgba(96,165,250,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(96,165,250,0.4);
+    }
+
+    .btn-success {
+      background: #22c55e;
+      border: none;
+      color: #fff;
+    }
+
+    .btn-success:hover { background: #16a34a; transform: translateY(-1px); }
+
+    .btn-danger  { border-radius: 8px; font-size: 13px; }
+    .btn-info    { border-radius: 8px; font-size: 13px; }
+    .btn-sm      { padding: 5px 12px; }
+
+    /* ── Modal ───────────────────────────── */
+    .modal-content {
+      border: none;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid #e2e8f7;
+      padding: 20px 24px 16px;
+    }
+
+    .modal-title { font-weight: 700; color: #1e293b; }
+    .modal-body  { padding: 24px; }
+    .modal-footer { border-top: 1px solid #e2e8f7; padding: 16px 24px; }
+
+    /* ── Alerts ──────────────────────────── */
+    .alert {
+      border-radius: 12px;
+      border: none;
+      font-size: 14.5px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Badges ──────────────────────────── */
+    .badge { border-radius: 6px; font-weight: 500; }
   </style>
 </head>
 <body>
   <div class="d-flex">
     {% if session.get('logged_in') %}
-    <div class="sidebar" style="width: 250px;">
-      <h4 class="text-center mb-4">Coreva Admin</h4>
-      <a href="{{ url_for('admin_dashboard') }}"><i class="bi bi-person me-2"></i> Profile</a>
-      <a href="{{ url_for('admin_projects') }}"><i class="bi bi-folder me-2"></i> Projects</a>
-      <a href="{{ url_for('admin_skills') }}"><i class="bi bi-tools me-2"></i> Skills</a>
-      <a href="{{ url_for('admin_blog') }}"><i class="bi bi-journal-text me-2"></i> Blog</a>
-      <a href="{{ url_for('logout') }}" class="mt-5 text-danger"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
-      <a href="{{ url_for('index') }}" target="_blank" class="mt-2 text-info"><i class="bi bi-eye me-2"></i> View Site</a>
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <i class="bi bi-layers-fill"></i>
+        Coreva Admin
+      </div>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Content</div>
+        <a href="{{ url_for('admin_dashboard') }}" class="sidebar-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+          <i class="bi bi-person-circle"></i> Profile
+        </a>
+        <a href="{{ url_for('admin_projects') }}" class="sidebar-link {% if request.endpoint == 'admin_projects' %}active{% endif %}">
+          <i class="bi bi-folder2-open"></i> Projects
+        </a>
+        <a href="{{ url_for('admin_skills') }}" class="sidebar-link {% if request.endpoint == 'admin_skills' %}active{% endif %}">
+          <i class="bi bi-tools"></i> Skills
+        </a>
+        <a href="{{ url_for('admin_blog') }}" class="sidebar-link {% if request.endpoint == 'admin_blog' %}active{% endif %}">
+          <i class="bi bi-journal-richtext"></i> Blog Posts
+        </a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="{{ url_for('index') }}" target="_blank" class="sidebar-link link-info">
+          <i class="bi bi-box-arrow-up-right"></i> View Site
+        </a>
+        <a href="{{ url_for('logout') }}" class="sidebar-link link-danger">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+      </div>
     </div>
     {% endif %}
-    <div class="content flex-grow-1">
+
+    <div class="admin-content flex-grow-1">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           {% for category, message in messages %}

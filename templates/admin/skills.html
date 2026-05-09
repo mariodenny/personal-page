@@ -1,32 +1,44 @@
 {% extends 'admin/base.html' %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2>Manage Skills</h2>
-  <form action="{{ url_for('admin_add_skill') }}" method="POST" class="d-flex">
-    <input type="text" name="name" class="form-control me-2" placeholder="New Skill Name" required>
-    <button type="submit" class="btn btn-primary">Add</button>
+<div class="page-header">
+  <h2><i class="bi bi-tools me-2 text-primary"></i>Manage Skills</h2>
+  <form action="{{ url_for('admin_add_skill') }}" method="POST" class="d-flex gap-2">
+    <input type="text" name="name" class="form-control" placeholder="New skill name…" required style="width: 220px;">
+    <button type="submit" class="btn btn-primary px-4">
+      <i class="bi bi-plus-lg me-1"></i>Add
+    </button>
   </form>
 </div>
 
-<div class="card shadow-sm">
-  <div class="card-body">
-    <table class="table table-hover">
+<div class="admin-card">
+  <div class="card-header"><i class="bi bi-list-check me-2"></i>All Skills</div>
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Name</th>
+          <th>#</th>
+          <th>Skill Name</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for skill in skills %}
         <tr>
-          <td>{{ skill.id }}</td>
-          <td>{{ skill.name }}</td>
+          <td class="text-muted">{{ skill.id }}</td>
           <td>
-            <a href="{{ url_for('admin_delete_skill', id=skill.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this skill?');">Delete</a>
+            <span class="badge bg-light text-dark border px-3 py-2" style="font-size:13.5px; border-radius:8px;">
+              {{ skill.name }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ url_for('admin_delete_skill', id=skill.id) }}" class="btn btn-sm btn-outline-danger"
+               onclick="return confirm('Delete {{ skill.name }}?');">
+              <i class="bi bi-trash"></i> Delete
+            </a>
           </td>
         </tr>
+        {% else %}
+        <tr><td colspan="3" class="text-center text-muted py-4">No skills yet.</td></tr>
         {% endfor %}
       </tbody>
     </table>

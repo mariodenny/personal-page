@@ -1,26 +1,32 @@
 {% extends 'admin/base.html' %}
 {% block content %}
-<h2>Manage Profile</h2>
-<div class="card shadow-sm mt-4">
+<div class="page-header">
+  <h2><i class="bi bi-person-circle me-2 text-primary"></i>Manage Profile</h2>
+</div>
+
+<div class="admin-card">
+  <div class="card-header"><i class="bi bi-pencil-square me-2"></i>Edit Profile Information</div>
   <div class="card-body">
     <form action="{{ url_for('admin_update_profile') }}" method="POST">
-      <div class="mb-3">
-        <label class="form-label">Hero Title (HTML allowed)</label>
+      <div class="mb-4">
+        <label class="form-label">Hero Title <span class="text-muted fw-normal">(HTML allowed)</span></label>
         <input type="text" class="form-control" name="hero_title" value="{{ profile.hero_title if profile else '' }}" required>
       </div>
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">Hero Description</label>
         <textarea class="form-control" name="hero_description" rows="3" required>{{ profile.hero_description if profile else '' }}</textarea>
       </div>
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">About Description</label>
         <textarea class="form-control" name="about_description" rows="4" required>{{ profile.about_description if profile else '' }}</textarea>
       </div>
-      <div class="mb-3">
+      <div class="mb-4">
         <label class="form-label">Contact Text</label>
         <textarea class="form-control" name="contact_text" rows="2" required>{{ profile.contact_text if profile else '' }}</textarea>
       </div>
-      <button type="submit" class="btn btn-success">Save Profile</button>
+      <button type="submit" class="btn btn-success px-4">
+        <i class="bi bi-check-lg me-2"></i>Save Profile
+      </button>
     </form>
   </div>
 </div>
