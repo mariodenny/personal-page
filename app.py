@@ -23,7 +23,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Upload Configuration
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER  # absolute path
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 db.init_app(app)
@@ -42,6 +43,11 @@ def login_required(f):
             return redirect(url_for('login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
+
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash('File is too large. Maximum upload size is 16MB.', 'danger')
+    return redirect(request.referrer or url_for('admin_dashboard')), 413
 
 def create_initial_data():
     try:
@@ -171,12 +177,12 @@ def admin_add_project():
     files = request.files.getlist('images')
     for file in files:
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4().hex}_{filename}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            file.save(os.path.join(app.root_path, file_path))
+            original_filename = secure_filename(file.filename)
+            unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
+            save_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            file.save(save_path)
             
-            media = Media(filename=filename, file_path=file_path, entity_type='project', entity_id=new_project.id)
+            media = Media(filename=unique_filename, file_path=f'static/uploads/{unique_filename}', entity_type='project', entity_id=new_project.id)
             db.session.add(media)
     
     db.session.commit()
@@ -190,7 +196,7 @@ def admin_delete_project(id):
     medias = Media.query.filter_by(entity_type='project', entity_id=project.id).all()
     for media in medias:
         try:
-            os.remove(os.path.join(app.root_path, media.file_path))
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], media.filename))
         except:
             pass
         db.session.delete(media)
@@ -248,12 +254,12 @@ def admin_add_post():
     
     file = request.files.get('image')
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        unique_filename = f"{uuid.uuid4().hex}_{filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-        file.save(os.path.join(app.root_path, file_path))
+        original_filename = secure_filename(file.filename)
+        unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
+        save_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+        file.save(save_path)
         
-        media = Media(filename=filename, file_path=file_path, entity_type='blog', entity_id=new_post.id)
+        media = Media(filename=unique_filename, file_path=f'static/uploads/{unique_filename}', entity_type='blog', entity_id=new_post.id)
         db.session.add(media)
         db.session.commit()
         
@@ -267,7 +273,7 @@ def admin_delete_post(id):
     media = Media.query.filter_by(entity_type='blog', entity_id=post.id).first()
     if media:
         try:
-            os.remove(os.path.join(app.root_path, media.file_path))
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], media.filename))
         except:
             pass
         db.session.delete(media)
