@@ -3,8 +3,6 @@ version: '3.8'
 services:
   web:
     build: .
-    ports:
-      - "5000:5000"
     env_file:
       - .env
     volumes:
@@ -18,8 +16,6 @@ services:
     restart: always
     env_file:
       - .env
-    ports:
-      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
@@ -30,8 +26,6 @@ services:
   adminer:
     image: adminer
     restart: always
-    ports:
-      - "8080:8080"
     depends_on:
       - db
 
